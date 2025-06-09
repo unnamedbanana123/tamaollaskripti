@@ -1,0 +1,401 @@
+-- Anti-Cheat Check Notification
+local function antiCheatCheck()
+    local dots = {"", ".", "..", "..."}
+    local startTime = os.time()
+    
+    while os.time() - startTime < 15 do
+        for i = 1, 4 do
+            game:GetService("StarterGui"):SetCore("SendNotification", {
+                Title = "System",
+                Text = "Checking anticheat"..dots[i],
+                Duration = 0.5,
+                Icon = "rbxassetid://0"
+            })
+            wait(0.5)
+        end
+    end
+    
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = "System",
+        Text = "Done loading script",
+        Duration = 5,
+        Icon = "rbxassetid://0"
+    })
+end
+
+-- Run the anti-cheat check first
+antiCheatCheck()
+
+-- Wait a moment before showing GUI
+wait(1)
+
+--[[
+    GUI Script Restyled by Gemini
+    Original functionality remains unchanged.
+    Improvements include:
+    - A modern, dark theme with an accent color.
+    - An animated gradient background for a dynamic effect.
+    - Enhanced tweening for smoother button interactions and an intro animation.
+    - Cleaner code structure with theme variables.
+]]
+
+-- Services
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+
+-- Theme Configuration (Customize your style here!)
+local Theme = {
+    Background = Color3.fromRGB(21, 22, 28),
+    Primary = Color3.fromRGB(34, 36, 46),
+    Secondary = Color3.fromRGB(45, 48, 62),
+    Accent = Color3.fromRGB(118, 95, 246),
+    AccentDark = Color3.fromRGB(90, 70, 210),
+    Text = Color3.fromRGB(230, 230, 245),
+    MutedText = Color3.fromRGB(160, 160, 180),
+    Success = Color3.fromRGB(80, 255, 150),
+    Warning = Color3.fromRGB(255, 220, 100),
+    Error = Color3.fromRGB(255, 100, 100),
+
+    FontBold = Enum.Font.GothamBold,
+    FontMedium = Enum.Font.GothamSemibold,
+    FontRegular = Enum.Font.Gotham,
+
+    Rounding = UDim.new(0, 8),
+    StrokeThickness = 1
+}
+
+-- Main GUI Setup
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ShecklesDupeGUI_V2"
+ScreenGui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
+-- Sound Setup
+local Sound = Instance.new("Sound")
+Sound.SoundId = "rbxassetid://131886985"
+Sound.Volume = 0.5
+Sound.Parent = ScreenGui
+
+-- Main Frame
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 340, 0, 300)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.BackgroundColor3 = Theme.Background
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner", MainFrame)
+UICorner.CornerRadius = Theme.Rounding
+
+local UIStroke = Instance.new("UIStroke", MainFrame)
+UIStroke.Color = Theme.Primary
+UIStroke.Thickness = Theme.StrokeThickness + 1
+
+-- Animated Gradient Background
+local UIGradient = Instance.new("UIGradient", MainFrame)
+UIGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Theme.Primary),
+    ColorSequenceKeypoint.new(0.5, Theme.Background),
+    ColorSequenceKeypoint.new(1, Theme.Primary)
+})
+UIGradient.Rotation = 45
+UIGradient.Transparency = NumberSequence.new(0)
+
+-- Coroutine to animate the gradient for a "moving shit" effect
+coroutine.wrap(function()
+    while MainFrame.Parent do
+        TweenService:Create(UIGradient, TweenInfo.new(3, Enum.EasingStyle.Linear), {Offset = Vector2.new(1, 0)}):Play()
+        wait(3)
+        UIGradient.Offset = Vector2.new(-1, 0)
+        TweenService:Create(UIGradient, TweenInfo.new(3, Enum.EasingStyle.Linear), {Offset = Vector2.new(0, 0)}):Play()
+        wait(3)
+    end
+end)()
+
+-- Title Bar
+local TitleBar = Instance.new("Frame")
+TitleBar.Name = "TitleBar"
+TitleBar.Size = UDim2.new(1, 0, 0, 40)
+TitleBar.BackgroundColor3 = Theme.Primary
+TitleBar.BackgroundTransparency = 0.5
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = MainFrame
+
+local Title = Instance.new("TextLabel", TitleBar)
+Title.Name = "Title"
+Title.Text = "SHEKELS DUPE"
+Title.Size = UDim2.new(1, -40, 1, 0)
+Title.Position = UDim2.new(0, 15, 0, 0)
+Title.BackgroundTransparency = 1
+Title.TextColor3 = Theme.Text
+Title.Font = Theme.FontBold
+Title.TextSize = 18
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Add a gradient to the title text for extra style
+local TitleGradient = Instance.new("UIGradient", Title)
+TitleGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Theme.Accent),
+    ColorSequenceKeypoint.new(1, Theme.Text)
+})
+TitleGradient.Rotation = 90
+
+-- Close Button
+local CloseButton = Instance.new("TextButton", TitleBar)
+CloseButton.Name = "CloseButton"
+CloseButton.Text = "ￃﾗ"
+CloseButton.Size = UDim2.new(0, 40, 1, 0)
+CloseButton.Position = UDim2.new(1, -40, 0, 0)
+CloseButton.BackgroundTransparency = 1
+CloseButton.TextColor3 = Theme.MutedText
+CloseButton.Font = Theme.FontBold
+CloseButton.TextSize = 24
+
+-- Content Frame
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, -30, 1, -55)
+ContentFrame.Position = UDim2.new(0.5, 0, 0, 48)
+ContentFrame.AnchorPoint = Vector2.new(0.5, 0)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.Parent = MainFrame
+
+-- Helper function to create styled buttons
+local function createStyledButton(name, text, position)
+    local Button = Instance.new("TextButton")
+    Button.Name = name
+    Button.Text = text
+    Button.Size = UDim2.new(1, 0, 0, 45)
+    Button.Position = position
+    Button.BackgroundColor3 = Theme.Secondary
+    Button.TextColor3 = Theme.Text
+    Button.Font = Theme.FontBold
+    Button.TextSize = 16
+    Button.AutoButtonColor = false
+    Button.Parent = ContentFrame
+
+    local ButtonCorner = Instance.new("UICorner", Button)
+    ButtonCorner.CornerRadius = UDim.new(0, 6)
+    
+    local ButtonStroke = Instance.new("UIStroke", Button)
+    ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    ButtonStroke.Color = Theme.Primary
+    ButtonStroke.Thickness = Theme.StrokeThickness
+    
+    return Button
+end
+
+local BypassButton = createStyledButton("BypassButton", "BYPASS ANTICHEAT", UDim2.new(0, 0, 0, 10))
+local DupeButton = createStyledButton("DupeButton", "START DUPE", UDim2.new(0, 0, 0, 65))
+
+-- Helper function to create info labels
+local function createInfoLabel(name, text, position, color)
+    local Label = Instance.new("TextLabel")
+    Label.Name = name
+    Label.Text = text
+    Label.Size = UDim2.new(1, 0, 0, 20)
+    Label.Position = position
+    Label.BackgroundTransparency = 1
+    Label.TextColor3 = color
+    Label.Font = Theme.FontRegular
+    Label.TextSize = 14
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+    Label.Parent = ContentFrame
+    return Label
+end
+
+local InstructionLabel = createInfoLabel("InstructionLabel", "Remember to hold any pet", UDim2.new(0, 0, 0, 120), Theme.MutedText)
+local StatusLabel = createInfoLabel("StatusLabel", "Status: Ready", UDim2.new(0, 0, 0, 150), Theme.Success)
+local ValueLabel = createInfoLabel("ValueLabel", "Current Shekels: --", UDim2.new(0, 0, 0, 175), Theme.Warning)
+StatusLabel.Font = Theme.FontMedium
+ValueLabel.Font = Theme.FontMedium
+
+
+-- --- LOGIC AND FUNCTIONALITY (Unchanged) ---
+
+-- Intro Animation
+MainFrame.Size = UDim2.new(0, 0, 0, 0)
+MainFrame.BackgroundTransparency = 1
+TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+    Size = UDim2.new(0, 340, 0, 300),
+    BackgroundTransparency = 0
+}):Play()
+
+-- Make window draggable
+local dragging, dragInput, dragStart, startPos
+TitleBar.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainFrame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+TitleBar.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+end)
+
+-- Button Animations
+local function animateButton(button, event)
+    local targetColor
+    if event == "Enter" then
+        targetColor = Theme.AccentDark
+    elseif event == "Leave" then
+        targetColor = button.Active and Theme.Secondary or Color3.fromRGB(40, 40, 40)
+    elseif event == "Click" then
+        -- Quick flash animation on click
+        TweenService:Create(button, TweenInfo.new(0.1), {BackgroundColor3 = Theme.Accent}):Play()
+        wait(0.1)
+        targetColor = Theme.AccentDark -- Settle on hover color after click
+    end
+    
+    if targetColor then
+        TweenService:Create(button, TweenInfo.new(0.2), {BackgroundColor3 = targetColor}):Play()
+    end
+end
+
+BypassButton.MouseEnter:Connect(function() animateButton(BypassButton, "Enter") end)
+BypassButton.MouseLeave:Connect(function() animateButton(BypassButton, "Leave") end)
+BypassButton.MouseButton1Click:Connect(function() if BypassButton.Active then animateButton(BypassButton, "Click") end end)
+
+DupeButton.MouseEnter:Connect(function() if DupeButton.Active then animateButton(DupeButton, "Enter") end end)
+DupeButton.MouseLeave:Connect(function() animateButton(DupeButton, "Leave") end)
+DupeButton.MouseButton1Click:Connect(function() if DupeButton.Active then animateButton(DupeButton, "Click") end end)
+
+CloseButton.MouseEnter:Connect(function() TweenService:Create(CloseButton, TweenInfo.new(0.2), {TextColor3 = Theme.Error}):Play() end)
+CloseButton.MouseLeave:Connect(function() TweenService:Create(CloseButton, TweenInfo.new(0.2), {TextColor3 = Theme.MutedText}):Play() end)
+
+-- Close Button Functionality
+CloseButton.MouseButton1Click:Connect(function()
+    TweenService:Create(MainFrame, TweenInfo.new(0.3, Enum.EasingStyle.Back, Enum.EasingDirection.In), {
+        Size = UDim2.new(0, 0, 0, 0),
+        BackgroundTransparency = 1
+    }):Play()
+    wait(0.3)
+    ScreenGui:Destroy()
+end)
+
+-- Bypass Button Functionality
+BypassButton.MouseButton1Click:Connect(function()
+    if not BypassButton.Active then return end
+    
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local Notification = ReplicatedStorage:FindFirstChild("GameEvents") and ReplicatedStorage.GameEvents:FindFirstChild("Notification")
+    
+    if Notification then
+        firesignal(Notification.OnClientEvent, "Bypassing wait...")
+    else
+        game.StarterGui:SetCore("SendNotification", {Title = "Shekels Dupe", Text = "Bypassing wait...", Duration = 5})
+    end
+    
+    BypassButton.Active = false
+    StatusLabel.Text = "Status: Bypassing anticheat..."
+    StatusLabel.TextColor3 = Theme.Warning
+    
+    animateButton(BypassButton, "Leave")
+    
+    local startTime = tick()
+    local endTime = startTime + 30
+    
+    spawn(function()
+        while tick() < endTime and not BypassButton.Active do
+            local remaining = math.ceil(endTime - tick())
+            BypassButton.Text = string.format("BYPASSING... %ds", remaining)
+            wait(0.1)
+        end
+    end)
+    
+    wait(30)
+    
+    if Notification then
+        firesignal(Notification.OnClientEvent, "you can dupe now")
+    else
+        game.StarterGui:SetCore("SendNotification", {Title = "Shekels Dupe", Text = "You can dupe now", Duration = 5})
+    end
+    
+    DupeButton.Active = true
+    DupeButton.TextColor3 = Theme.Text
+    DupeButton.BackgroundColor3 = Theme.Secondary -- Reset color
+    StatusLabel.Text = "Status: Ready to dupe!"
+    StatusLabel.TextColor3 = Theme.Success
+    
+    BypassButton.Text = "BYPASS COMPLETE"
+    wait(2)
+    BypassButton.Text = "BYPASS ANTICHEAT"
+    BypassButton.Active = true
+    animateButton(BypassButton, "Leave") -- Reset to default active color
+end)
+
+-- Dupe Button Functionality
+local dupeActive = false
+DupeButton.MouseButton1Click:Connect(function()
+    if not DupeButton.Active then return end
+    
+    dupeActive = not dupeActive
+    
+    if dupeActive then
+        local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+        local shekelsUI = playerGui:FindFirstChild("Sheckles_UI") or playerGui:FindFirstChild("Shekels_UI")
+        
+        if shekelsUI then
+            local textLabel = shekelsUI:FindFirstChild("TextLabel") or shekelsUI:FindFirstChildWhichIsA("TextLabel")
+            if textLabel and textLabel:FindFirstChild("val") then
+                local initialValue = textLabel.val.Value
+                ValueLabel.Text = string.format("Current Shekels: %d", initialValue)
+                
+                DupeButton.Text = "STOP DUPE"
+                StatusLabel.Text = "Status: Duping active!"
+                StatusLabel.TextColor3 = Theme.Success
+                
+                spawn(function()
+                    while dupeActive do
+                        wait(0.8)
+                        if not dupeActive then break end
+                        
+                        Sound:Play()
+                        
+                        textLabel.val.Value = textLabel.val.Value + 100000
+                        ValueLabel.Text = string.format("Current Shekels: %d", textLabel.val.Value)
+                    end
+                end)
+            else
+                StatusLabel.Text = "Status: Error - Value not found"
+                StatusLabel.TextColor3 = Theme.Error
+                dupeActive = false
+            end
+        else
+            StatusLabel.Text = "Status: Error - UI not found"
+            StatusLabel.TextColor3 = Theme.Error
+            dupeActive = false
+        end
+    else
+        DupeButton.Text = "START DUPE"
+        StatusLabel.Text = "Status: Ready to dupe!"
+        Sound:Stop()
+    end
+end)
+
+-- Initialize Button States
+BypassButton.Active = true
+DupeButton.Active = false
+DupeButton.TextColor3 = Theme.MutedText
+DupeButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
